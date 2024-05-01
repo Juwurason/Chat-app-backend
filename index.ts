@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 import { setupSocketEvents } from './sockets';
 import cors from 'cors';
+import messageRouter from './routes/messageRouter';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -26,9 +27,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.get('/', (req: Request, res: Response) => {
-    res.sendFile(__dirname + '/client.html');
-});
+// app.get('/', (req: Request, res: Response) => {
+//     res.sendFile(__dirname + '/client.html');
+// });
 
 // Setup socket events
 io.on('connection', (socket) => {
@@ -46,6 +47,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ error: 'Internal Server Error' });
 });
 
+app.use('/api', messageRouter);
 // Start serving static files from the 'public' directory
 app.use(express.static('public'));
 
